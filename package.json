@@ -1,0 +1,26 @@
+{
+  "name": "jquery-two-row-carousel",
+  "version": "1.0.0",
+  "description": "A jquery plugin for 2 row carousel",
+  "main": "index.js",
+  "devDependencies": {
+    "uglify-js": "^2.7.4"
+  },
+  "scripts": {
+    "minify": "uglifyjs js/two.row.carousel.js -o js/two.row.carousel.min.js"
+  },
+  "repository": {
+    "type": "git"
+  },
+  "keywords": [
+    "carousel",
+    "two",
+    "row"
+  ],
+  "author": "Marlena",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quartucm/two-row-carousel/issues"
+  },
+  "homepage": "https://github.com/quartucm/two-row-carousel#readme"
+}
