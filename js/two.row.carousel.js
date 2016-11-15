@@ -11,20 +11,18 @@
 
 	function Plugin(element, options) {
 		this.element = element;
-		$element = $(element);
+		this.$element = $(element);
 		this.options = $.extend({}, defaults, options);
 		this._defaults = defaults;
 		this._name = pluginName;
 		//Carousel variable definition
 		this.currentPage = 0;
-		this.carouselChildren = $element.children();
+		this.carouselChildren = this.$element.children();
 		this.numOfLi = this.carouselChildren.length;
 		this.slideWidth = this.carouselChildren.outerWidth();
-		this.slideHeight = this.carouselChildren.height();
 		this.sliderUlWidth = this.slideWidth * this.options.numberWide;
 		this.itemsPerPage = this.sliderUlWidth / this.slideWidth * 2;
 		this.numPages = this.numOfLi / this.itemsPerPage;
-
 		this.init();
 	}
 
@@ -34,9 +32,9 @@
 		init : function() {
 			Self = this;
 			this.displayCorrectArrows();
-			this.setContainerWidth();
-			this.setListWidth();
-			this.attachEvents($element);
+			this.setContainerWidth(this.options.container);
+			this.setListWidth(this.$element);
+			this.attachEvents(this.$element);
 		},
 		displayCorrectArrows : function() {
 			//Always hide the previous arrow on first screen
@@ -46,13 +44,13 @@
 				this.options.next.hide();
 			}
 		},
-		setContainerWidth : function() {
-			this.options.container.css({
+		setContainerWidth : function(container) {
+			container.css({
 				width : this.sliderUlWidth
 			});
 		},
-		setListWidth : function() {
-			$element.css({
+		setListWidth : function(el) {
+			el.css({
 				width : Math.ceil(this.numOfLi / 2) * this.slideWidth,
 				left: 0
 			});
@@ -68,41 +66,42 @@
 			var cur = parseInt(el.css('left'));
 			return cur;
 		},
+		animate: function(dir, el) {
+			dir = (dir === 'left') ? + this.sliderUlWidth : - this.sliderUlWidth;
+			el.stop().animate({
+				left : this.getCurrentPosition(el) + dir
+			}, this.options.scrollSpeed);
+		},
 		moveRight : function(el) {
 			this.currentPage++;
-			el.stop().animate({
-				left : this.getCurrentPosition(el) - this.sliderUlWidth
-			}, Self.options.scrollSpeed);
+			this.animate('right', el);
 			if (this.currentPage === Math.ceil(this.numPages) - 1) {
-				Self.options.next.hide();
+				this.options.next.hide();
 			} else {
-				Self.options.prev.show();
+				this.options.prev.show();
 			} 
 
 		},
 		moveLeft : function(el) {
 			this.currentPage--;
-			el.stop().animate({
-				left : this.getCurrentPosition(el) + this.sliderUlWidth
-			}, Self.options.scrollSpeed);
-
+			this.animate('left', el);
 			if (this.currentPage === 0) {
-				Self.options.prev.hide();
+				this.options.prev.hide();
 			} else {
-				Self.options.next.show();
+				this.options.next.show();
 			} 
 		},
 		attachEvents : function(el) {
 
 			this.options.prev.click(function() {
 				if (Self.notAnimatedCheck(el) === true) {
-					Self.moveLeft($element);
+					Self.moveLeft(el);
 				}
 			});
 
 			this.options.next.click(function() {
 				if (Self.notAnimatedCheck(el) === true) {
-					Self.moveRight($element);
+					Self.moveRight(el);
 				}
 			});
 			
